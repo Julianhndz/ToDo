@@ -1,0 +1,20 @@
+{% extends 'task/base.html' %}
+
+{% block content %}
+
+<h2>Bienvenido a la lista de tareas</h2>
+<br>
+<h5>Iniciar Sesión</h5>
+
+{{ error }}
+
+<form action="" method="post">
+    {% csrf_token %}
+
+    {{ form.as_p }}
+    <button type="submit">Iniciar Sesión</button>
+    <button type="button" onclick="window.location.href='/signup/'">Registrate</button>
+
+</form>
+
+{% endblock  %}

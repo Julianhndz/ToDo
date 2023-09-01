@@ -1,0 +1,12 @@
+{% extends 'task/base.html' %}
+
+
+{% block content %}
+<h1>Pagina Principal</h1>
+{% if request.user.is_authenticated %}
+    <hr>
+    <h4>
+        {{ user.username | upper }}, bienvenido!
+    </h4>
+{% endif %}
+{% endblock %}

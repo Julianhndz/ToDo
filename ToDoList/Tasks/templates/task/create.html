@@ -1,0 +1,12 @@
+{% extends 'task/base.html' %}
+{% block content %}
+<h1>Tarea nueva</h1>
+<form action="" method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button>
+        Save
+    </button>
+</form>
+
+{% endblock  %}
