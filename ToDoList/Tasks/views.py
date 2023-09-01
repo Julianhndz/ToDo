@@ -3,7 +3,9 @@ from .models import Task
 from .forms import TaskForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, logout, authenticate
-from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from django.contrib.auth.models import User
+from django.db import IntegrityError
 
 # Create your views here.
 
@@ -23,7 +25,25 @@ def createTask(request):
             new_task.id_user = request.user
             new_task.save()
             return redirect("index")
-    
+
+
+def signUp(request):
+    if request.method == "GET":
+        return render(request, "registration/signup.html", {"form" : UserCreationForm})
+    else:
+        if request.POST["password1"] == request.POST["password2"]:
+            try:
+                user_register = User.objects.create_user(username=request.POST["username"], password=request.POST["password1"])
+                user_register.save()
+                login(request, user_register)
+                return redirect("index")
+            except IntegrityError:
+                # Se maneja el error de que el nombre del usuario que se quiere crear sea igual a uno ya existente. Django hace la comparación de manera automatica, acá solamente mostramos un mensaje de error en pantalla.
+                return render(request, "registration/signup.html", {"form": UserCreationForm,
+                                                                   "error": "Usuario ya existe"})
+        return render(request, "registration/signup.html", {"form": UserCreationForm,
+                                                            "error": "Las contraseñas no coinciden."})
+
 
 def log_in(request):
     if request.method == "GET":
