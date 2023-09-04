@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import Task
 from .forms import TaskForm
 from django.contrib.auth.decorators import login_required
@@ -25,6 +25,14 @@ def createTask(request):
             new_task.id_user = request.user
             new_task.save()
             return redirect("index")
+
+@login_required
+def listTask(request):
+    if request.user.is_authenticated:
+        list_task = Task.objects.filter(id_user=request.user)
+    else:
+        list_task = []
+    return render(request, "task/list.html", {"tasks" : list_task})
 
 
 def signUp(request):
