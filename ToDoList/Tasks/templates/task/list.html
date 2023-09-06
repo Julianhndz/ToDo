@@ -5,7 +5,8 @@
     <li>
         {% if tasks %}
             {% for task in tasks %}
-                <h4>{{ task.title }}<br>{{ task.task_description }}<br>{{ task.limit_date }}</h4>
+                <a href="{% url 'taskDetail' task.id %}"><h4>{{ task.title }}</a>
+                    <br>{{ task.task_description }}<br>{{ task.limit_date }}</h4>
             {% endfor %}
         {% else %}
             <h4>You have no tasks on the list</h4>

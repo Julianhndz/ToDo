@@ -35,6 +35,24 @@ def listTask(request):
     return render(request, "task/list.html", {"tasks" : list_task})
 
 
+def taskDetail(request, taskid):
+    if request.method == "GET":
+        selectedTask = get_object_or_404(Task, pk=taskid, id_user=request.user)
+        form = TaskForm(request.POST, instance=selectedTask)
+        return render(request, "task/detail.html", {"task" : selectedTask,
+                                                    "form" : form})
+    else:
+        try:
+            selectedTask = get_object_or_404(Task, pk=taskid, id_user=request.user)
+            form = TaskForm(request.POST, instance=selectedTask)
+            form.save()
+            return redirect("/list")
+        except ValueError:
+            return render(request, "task/detail.html", {"task" : selectedTask,
+                                                        "form" : form,
+                                                        "error" : "Error updating task"})
+
+
 def signUp(request):
     if request.method == "GET":
         return render(request, "registration/signup.html", {"form" : UserCreationForm})
