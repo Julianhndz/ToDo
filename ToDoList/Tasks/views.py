@@ -35,6 +35,7 @@ def listTask(request):
     return render(request, "task/list.html", {"tasks" : list_task})
 
 
+@login_required
 def taskDetail(request, taskid):
     if request.method == "GET":
         selectedTask = get_object_or_404(Task, pk=taskid, id_user=request.user)
@@ -49,8 +50,15 @@ def taskDetail(request, taskid):
             return redirect("/list")
         except ValueError:
             return render(request, "task/detail.html", {"task" : selectedTask,
-                                                        "form" : form,
-                                                        "error" : "Error updating task"})
+                                                        "form" : form,})
+
+
+@login_required
+def deleteTask(request, taskid):
+    task = get_object_or_404(Task, pk=taskid, id_user=request.user)
+    if request.method == "POST":
+        task.delete()
+        return redirect("/list")
 
 
 def signUp(request):
