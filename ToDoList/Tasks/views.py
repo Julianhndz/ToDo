@@ -24,7 +24,8 @@ def createTask(request):
             new_task = form.save(commit=False)
             new_task.id_user = request.user
             new_task.save()
-            return redirect("index")
+            return redirect("list")
+
 
 @login_required
 def listTask(request):
