@@ -38,16 +38,17 @@ def listTask(request):
 
 @login_required
 def taskDetail(request, taskid):
+    selectedTask = get_object_or_404(Task, pk=taskid, id_user=request.user)
     if request.method == "GET":
-        selectedTask = get_object_or_404(Task, pk=taskid, id_user=request.user)
-        form = TaskForm(request.POST, instance=selectedTask)
+        form = TaskForm(instance=selectedTask)
         return render(request, "task/detail.html", {"task" : selectedTask,
                                                     "form" : form})
     else:
         try:
-            selectedTask = get_object_or_404(Task, pk=taskid, id_user=request.user)
             form = TaskForm(request.POST, instance=selectedTask)
-            form.save()
+            task = form.save()
+            if task.box_choices == "Completada":
+                task.delete()
             return redirect("/list")
         except ValueError:
             return render(request, "task/detail.html", {"task" : selectedTask,
