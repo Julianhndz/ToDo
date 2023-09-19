@@ -6,6 +6,8 @@ from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth.models import User
 from django.db import IntegrityError
+from django.db.models import Q
+from django.utils import timezone
 
 # Create your views here.
 
@@ -30,10 +32,19 @@ def createTask(request):
 @login_required
 def listTask(request):
     if request.user.is_authenticated:
-        list_task = Task.objects.filter(id_user=request.user)
+        list_task = Task.objects.filter(Q(id_user=request.user, box_choices="Pendiente") | Q(id_user=request.user, box_choices="En progreso"))
     else:
         list_task = []
     return render(request, "task/list.html", {"tasks" : list_task})
+
+
+@login_required
+def completedList(request):
+    if request.user.is_authenticated:
+        completed = Task.objects.filter(id_user=request.user, box_choices="Completada")
+    else:
+        completed = []
+    return render(request, "task/completed.html", {"completed":completed})
 
 
 @login_required
@@ -46,9 +57,9 @@ def taskDetail(request, taskid):
     else:
         try:
             form = TaskForm(request.POST, instance=selectedTask)
-            task = form.save()
-            if task.box_choices == "Completada":
-                task.delete()
+            if selectedTask.box_choices == "Completada":
+                selectedTask.finished_date = timezone.now()
+            form.save()
             return redirect("/list")
         except ValueError:
             return render(request, "task/detail.html", {"task" : selectedTask,

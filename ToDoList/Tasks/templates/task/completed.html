@@ -1,0 +1,16 @@
+{% extends "task/base.html" %}
+{% block content %}
+<h2>Completed Tasks</h2>
+<ul>
+    <li>
+        {% if completed %}
+            {% for task in completed %}
+                <h4>{{ task.title }}<br>{{ task.task_description }}<br>{{ task.limit_date }}<br>{{ task.box_choices }}
+                <br>{{ task.finished_date }}</h4>
+            {% endfor %}
+        {% else %}
+            <h4>You have no completed tasks on the list</h4>
+        {% endif %}
+    </li>
+</ul
+{% endblock  %}

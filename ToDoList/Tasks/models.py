@@ -9,6 +9,7 @@ class Task(models.Model):
     task_description = models.TextField()
     creation_date = models.DateTimeField(auto_now_add=True)
     limit_date = models.DateTimeField(null=True)
+    finished_date = models.DateTimeField(blank=True, null=True, auto_now=True)
     list_choices = [("Pendiente", "Pendiente"),
                ("En progreso", "En progreso"),
                ("Completada", "Completada")]
