@@ -20,9 +20,9 @@ def createTask(request):
     if request.method == "GET":
         return render(request, "task/create.html", {"form" : TaskForm()})
     else:
-        # new_task = Task.objects.create(title=request.POST["title"], task_description=request.POST["task_description"], limit_date=request.POST["limit_date"], box_choices=request.POST["box_choices"])
         form = TaskForm(request.POST)
         if form.is_valid():
+            # Se guarda el formulario sin enviarlo a la base de datos utilizando el argumento "commit=False" dentro del .save para luego poder agregar el id del usuario a la tarea recien creada, luego se guarda en DB.
             new_task = form.save(commit=False)
             new_task.id_user = request.user
             new_task.save()
@@ -31,6 +31,7 @@ def createTask(request):
 
 @login_required
 def listTask(request):
+    # Se listan las tareas que estan en estado "pendiente" o "en progreso". Para esto se utiliza una consulta compleja, utilizando un Q object dentro del filter
     if request.user.is_authenticated:
         list_task = Task.objects.filter(Q(id_user=request.user, box_choices="Pendiente") | Q(id_user=request.user, box_choices="En progreso"))
     else:
